@@ -1,4 +1,5 @@
 import numpy as np
+import copy
 
 class DistVector:
     coords = np.array([0, 0, 0])
@@ -7,12 +8,14 @@ class DistVector:
     def __init__(self, coords, Az):
         self.coords = coords
         self.Az = Az
-        x = self.coords[0] + np.cos(self.Az) * np.linspace(0, 12, 40)
-        y = self.coords[1] + np.sin(self.Az) * np.linspace(0, 12, 40)
-        z = self.coords[2] + np.linspace(0, 0, 40)
-        self.azline[0] = x
-        self.azline[1] = y
-        self.azline[2] = z
-        self.ort[0] = x[4] - x[0]
-        self.ort[1] = y[4] - y[2]
+        self.x = self.coords[0] + np.cos(self.Az) * np.linspace(0, 12, 40)
+        self.y = self.coords[1] + np.sin(self.Az) * np.linspace(0, 12, 40)
+        self.z = self.coords[2] + np.linspace(0, 0, 40)
+        self.azline = copy.deepcopy(self.azline)
+        self.azline[0] = self.x
+        self.azline[1] = self.y
+        self.azline[2] = self.z
+        self.ort = copy.deepcopy(self.ort)
+        self.ort[0] = self.x[4] - self.x[0]
+        self.ort[1] = self.y[4] - self.y[2]
         self.ort[2] = 0

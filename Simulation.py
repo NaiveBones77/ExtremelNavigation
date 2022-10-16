@@ -1,3 +1,5 @@
+import math
+
 import numpy as np
 from Uaw import Uaw
 from Wall import Wall
@@ -38,18 +40,44 @@ def calculateDist(walls, vec: DistVector):
     for w in walls:
         aa = w.Q[0] * vec.ort[0] + w.Q[1] * vec.ort[1] + w.Q[2] * vec.ort[2]
         if (aa != 0):
-            tmp = w.Q[0] * vec.coords[0][0] + w.Q[1] * vec.coords[1][0] + w.Q[2] * vec.coords[2][0] + w.Q[3]
-            tmp = tmp / vec
-            a = vec.coords[0][0] - vec.ort[0] * tmp, vec.coords[1][0] - vec.ort[1] * tmp, vec.coords[2][0] - vec.ort[
+            tmp = w.Q[0] * vec.azline[0][0] + w.Q[1] * vec.azline[1][0] + w.Q[2] * vec.azline[2][0] + w.Q[3]
+            tmp = tmp / aa
+            a = vec.azline[0][0] - vec.ort[0] * tmp, vec.azline[1][0] - vec.ort[1] * tmp, vec.azline[2][0] - vec.ort[
                 2] * tmp
-            if ((a[0] <= np.max(w.x) and a[0] >= np.min(w.x)) and (a[1] <= np.max(w.Y) and a[1] >= np.min(w.Y)) and
-                    (a[2] <= np.max(w.z) and a[2] >= np.min(w.z))):
-                t.append(
-                    [vec.coords[0][0] - vec.ort[0] * tmp, vec.coords[1][0] - vec.ort[1] * tmp,
-                     vec.coords[2][0] - vec.ort[2] * tmp])
+            if ((a[0] <= np.max(w.x) + 0.1 and a[0] >= np.min(w.x) - 0.1)
+                    and (a[1] <= np.max(w.Y) + 0.1 and a[1] >= np.min(w.Y) -0.1)
+                    and (a[2] <= np.max(w.z) + 0.1 and a[2] >= np.min(w.z) -0.1)):
+                vec_st = np.array([w.x[-1], w.Y[-1]])
+                vec_dist = np.array([vec.ort[0], vec.ort[1]])
+                c = np.dot(vec_dist, vec_st)/np.linalg.norm(vec_st) / np.linalg.norm(vec_dist)
+                ang = np.arccos(np.clip(c, -1, 1))
+                if (ang < np.pi / 2):
+                    t.append(a)
 
-        return t
+    return t
 
 def calculateCloud(uaw:Uaw, walls):
     t=[]
+    iter = 0
+    for dist in uaw.distances:
+        t.append(calculateDist2(walls, dist))
+        iter+=1
+        if (iter == 41):
+            print('deb')
+    return t
+
+def calculateDist2(walls, vec:DistVector):
+    t = []
+    for w in walls:
+        vec.ort = vec.ort / np.linalg.norm(vec.ort)
+        n = np.array([w.Q[0], w.Q[1], w.Q[2]])
+        t0 = - ((np.dot(vec.coords, n)) + w.Q[3]) / np.dot(vec.ort, n)
+        if (np.dot(vec.ort, n) != 0 and t0 >= 0 ):
+            x = vec.coords[0] + t0*vec.ort[0]
+            y = vec.coords[1] + t0*vec.ort[1]
+            z = vec.coords[2] + t0*vec.ort[2]
+            if ((x <= np.max(w.x) + 0.1 and x >= np.min(w.x) - 0.1)
+                    and (y <= np.max(w.Y) + 0.1 and y >= np.min(w.Y) - 0.1)
+                    and (z <= np.max(w.z) + 0.1 and z >= np.min(w.z) - 0.1)):
+                t.append(np.array([x, y, z]))
     return t

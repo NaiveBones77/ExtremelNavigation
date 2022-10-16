@@ -1,9 +1,11 @@
+import math
+
 import numpy as np
 import matplotlib.pyplot as plt
 from Wall import Wall
 from Room import Room
 from Uaw import Uaw
-#from Simulation import run
+from Simulation import *
 
 
 figure = plt.figure()
@@ -19,7 +21,9 @@ w6 = Wall([-6, -6], [-3, 7], [0, 8], Q=[-1, 0, 0, -6])
 walls = [w1, w2, w3, w4, w5, w6]
 room = Room(walls)
 
-uaw = Uaw(0, 0, 4, 0, 0.6)
+uaw = Uaw(2, 2, 4, -math.pi/2, Beta=1.47)
+
+t = calculateCloud(uaw, walls)
 
 
 for w in room.walls:
@@ -27,6 +31,8 @@ for w in room.walls:
                     cmap='Blues')
 
 ax.plot(uaw.azline[0], uaw.azline[1], zs = 4, zdir ='z')
+ax.plot(uaw.distances[0].x, uaw.distances[0].y, zs = 4, zdir ='z')
+ax.plot(uaw.distances[149].x, uaw.distances[149].y, zs = 4, zdir ='z')
 
 ax.set_xlabel('x')
 ax.set_ylabel('y')

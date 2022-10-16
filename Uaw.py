@@ -1,5 +1,6 @@
 import numpy as np
 from DistanceVector import DistVector
+import copy
 
 
 class Uaw:
@@ -30,8 +31,10 @@ class Uaw:
 
     def init_distances(self):
         angles = np.linspace(self.Az - self.Beta, self.Az + self.Beta, 150)
+        objs = [DistVector(self.coords, ang) for ang in angles]
         for angle in angles:
-            self.distances.append(DistVector(self.coords, angle))
+            a = copy.deepcopy(DistVector(self.coords, angle))
+            self.distances.append(a)
 
 
 
