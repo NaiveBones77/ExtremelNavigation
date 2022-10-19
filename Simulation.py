@@ -79,5 +79,6 @@ def calculateDist2(walls, vec:DistVector):
             if ((x <= np.max(w.x) + 0.1 and x >= np.min(w.x) - 0.1)
                     and (y <= np.max(w.Y) + 0.1 and y >= np.min(w.Y) - 0.1)
                     and (z <= np.max(w.z) + 0.1 and z >= np.min(w.z) - 0.1)):
-                t.append(np.array([x, y, z]))
+                dist = np.linalg.norm([x, y, z])
+                t.append(np.array([dist, vec.Az]))
     return t

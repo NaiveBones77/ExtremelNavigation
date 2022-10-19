@@ -6,6 +6,7 @@ from Wall import Wall
 from Room import Room
 from Uaw import Uaw
 from Simulation import *
+from ExtremeNaviganion import *
 
 
 figure = plt.figure()
@@ -21,10 +22,11 @@ w6 = Wall([-6, -6], [-3, 7], [0, 8], Q=[-1, 0, 0, -6])
 walls = [w1, w2, w3, w4, w5, w6]
 room = Room(walls)
 
-uaw = Uaw(2, 2, 4, -math.pi/2, Beta=1.47)
+uaw = Uaw(0, 0, 4, 0, Beta=1.47)
 
 t = calculateCloud(uaw, walls)
 
+calculateFunc(np.array([0, 0, 0]), t[0][0])
 
 for w in room.walls:
     ax.plot_surface(w.X, w.Y, w.Z, rstride=1, cstride=1,
