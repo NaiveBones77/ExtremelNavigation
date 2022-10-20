@@ -9,8 +9,8 @@ from Simulation import *
 from ExtremeNaviganion import *
 
 
-figure = plt.figure()
-ax = figure.add_subplot(projection='3d')
+figure = plt.figure(figsize=plt.figaspect(2.))
+
 
 w1 = Wall([-6, 6], [7, 7], [0, 8], Q=[0, 1, 0, -7])
 w2 = Wall([6, 6], [4, 7], [0, 8], Q=[1, 0, 0, -6])
@@ -26,7 +26,12 @@ uaw = Uaw(0, 0, 4, 0, Beta=1.47)
 
 t = calculateCloud(uaw, walls)
 
-calculateFunc(np.array([0, 0, 0]), t[0][0])
+ax = figure.add_subplot(2, 1, 1)
+
+disp = calculateSelfRecognition(t, 2, ax)
+
+
+ax = figure.add_subplot(2, 1, 2, projection='3d')
 
 for w in room.walls:
     ax.plot_surface(w.X, w.Y, w.Z, rstride=1, cstride=1,
