@@ -5,6 +5,7 @@ from Uaw import Uaw
 from Wall import Wall
 from Room import Room
 from DistanceVector import DistVector
+from numpy.random import normal
 
 
 def run():
@@ -66,8 +67,9 @@ def calculateCloud(uaw:Uaw, walls):
             print('deb')
     return t
 
-def calculateDist2(walls, vec:DistVector):
+def calculateDist2(walls, vec:DistVector, mu =0, std = 0.02):
     t = []
+
     for w in walls:
         vec.ort = vec.ort / np.linalg.norm(vec.ort)
         n = np.array([w.Q[0], w.Q[1], w.Q[2]])
@@ -79,6 +81,6 @@ def calculateDist2(walls, vec:DistVector):
             if ((x <= np.max(w.x) + 0.1 and x >= np.min(w.x) - 0.1)
                     and (y <= np.max(w.Y) + 0.1 and y >= np.min(w.Y) - 0.1)
                     and (z <= np.max(w.z) + 0.1 and z >= np.min(w.z) - 0.1)):
-                dist = np.linalg.norm([x, y, z])
+                dist = np.linalg.norm([x, y, z]) + normal(mu, std)
                 t.append(np.array([dist, vec.Az]))
     return t

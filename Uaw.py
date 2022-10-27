@@ -4,10 +4,6 @@ import copy
 
 
 class Uaw:
-    coords = np.array([0, 0, 0])
-    azline = np.zeros(shape=(3, 40))
-    ort = np.array([0, 0, 0], dtype=np.float)
-    distances = []
 
     def init_azline(self):
         x = self.coords[0] + np.cos(self.Az) * np.linspace(0, 12, 40)
@@ -21,6 +17,10 @@ class Uaw:
 
 
     def __init__(self, x0, y0, z0, Az, Beta):
+        self.coords = np.array([0, 0, 0])
+        self.azline = np.zeros(shape=(3, 40))
+        self.ort = np.array([0, 0, 0], dtype=np.float)
+        self.distances = []
         self.coords[0] = x0
         self.coords[1] = y0
         self.coords[2] = z0

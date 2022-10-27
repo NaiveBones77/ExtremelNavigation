@@ -18,17 +18,23 @@ w3 = Wall([6, 8], [4, 4], [0, 8], Q=[0, 1, 0, -4])
 w4 = Wall([8, 8], [-3, 4], [0, 8], Q=[1, 0, 0, -8])
 w5 = Wall([-6, 8], [-3, -3], [0, 8], Q=[0, -1, 0, -3])
 w6 = Wall([-6, -6], [-3, 7], [0, 8], Q=[-1, 0, 0, -6])
+w7 = Wall([-6, -6], [-3, 7], [0, 8], Q=[0, 0, 1, -6])
 
 walls = [w1, w2, w3, w4, w5, w6]
 room = Room(walls)
 
 uaw = Uaw(0, 0, 4, 0, Beta=1.47)
+uaw1 = Uaw(0.5, 0.6, 4, 0.15, Beta=1.47)
 
 t = calculateCloud(uaw, walls)
+t1 = calculateCloud(uaw1, walls)
+
 
 ax = figure.add_subplot(2, 1, 1)
 
-disp = calculateSelfRecognition(t, 2, ax)
+#dispMap = calculateFunc(t, t1, axis=1, ax=ax)
+#np.save('second.npy', dispMap)
+disp = calculateSelfRecognition(t, 1, ax)
 
 
 ax = figure.add_subplot(2, 1, 2, projection='3d')

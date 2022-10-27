@@ -2,7 +2,7 @@ import numpy as np
 import copy
 
 class DistVector:
-    coords = np.array([0, 0, 0])
+    coords = np.array([0, 0, 0])             # надо поменять
     azline = np.zeros(shape=(3, 40))
     ort = np.array([0, 0, 0], dtype=np.float)
     def __init__(self, coords, Az):
@@ -17,5 +17,5 @@ class DistVector:
         self.azline[2] = self.z
         self.ort = copy.deepcopy(self.ort)
         self.ort[0] = self.x[4] - self.x[0]
-        self.ort[1] = self.y[4] - self.y[2]
+        self.ort[1] = self.y[4] - self.y[0]
         self.ort[2] = 0
