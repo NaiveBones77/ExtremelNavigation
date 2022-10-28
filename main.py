@@ -7,6 +7,7 @@ from Room import Room
 from Uaw import Uaw
 from Simulation import *
 from ExtremeNaviganion import *
+from utils import *
 
 
 figure = plt.figure(figsize=plt.figaspect(2.))
@@ -23,18 +24,21 @@ w7 = Wall([-6, -6], [-3, 7], [0, 8], Q=[0, 0, 1, -6])
 walls = [w1, w2, w3, w4, w5, w6]
 room = Room(walls)
 
-uaw = Uaw(0, 0, 4, 0, Beta=1.47)
-uaw1 = Uaw(0.5, 0.6, 4, 0.15, Beta=1.47)
+ax = figure.add_subplot(2, 1, 1)
+
+uaw = Uaw(0, 0, 4, np.deg2rad(0), Beta=1.47)
+uaw1 = Uaw(0.5, -0.75, 4, np.deg2rad(-10), Beta=1.47)
 
 t = calculateCloud(uaw, walls)
 t1 = calculateCloud(uaw1, walls)
 
 
-ax = figure.add_subplot(2, 1, 1)
 
+plotRoomWith2Distances(t, t1, [0.5, -0.75, 0], ax=ax)
 #dispMap = calculateFunc(t, t1, axis=1, ax=ax)
-#np.save('second.npy', dispMap)
-disp = calculateSelfRecognition(t, 1, ax)
+#np.save('fourth.npy', dispMap)
+#disp = calculateSelfRecognition(t, 1, ax)
+plotDispRoom()
 
 
 ax = figure.add_subplot(2, 1, 2, projection='3d')

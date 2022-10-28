@@ -17,13 +17,10 @@ class Uaw:
 
 
     def __init__(self, x0, y0, z0, Az, Beta):
-        self.coords = np.array([0, 0, 0])
+        self.coords = np.array([x0, y0, z0])
         self.azline = np.zeros(shape=(3, 40))
         self.ort = np.array([0, 0, 0], dtype=np.float)
         self.distances = []
-        self.coords[0] = x0
-        self.coords[1] = y0
-        self.coords[2] = z0
         self.Beta = Beta
         self.Az = Az
         self.init_azline()

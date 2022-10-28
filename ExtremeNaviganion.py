@@ -89,9 +89,19 @@ def calculateFunc(t1, t2, axis, ax=None):
     for i in range(len(t1)):
         angxs[i] = np.array([t1[i][0][0], t1[i][0][1]])
 
-    xspace = np.linspace(-1, 1, 10)
-    yspace = np.linspace(-1, 1, 10)
-    phispace = np.linspace(np.deg2rad(-10), np.deg2rad(10), 10)
+    xspace = np.linspace(-1, 0, 5)
+    xspace1 = np.linspace(0, 1, 5)
+    xspace = np.concatenate((xspace, xspace1))
+
+    yspace = np.linspace(-1, 0, 5)
+    yspace1 = np.linspace(-1, 0, 5)
+    yspace = np.concatenate((yspace, yspace1))
+
+    phispace = np.linspace(np.deg2rad(-10), 0, 5)
+    phispace1 = np.linspace(0, np.deg2rad(10), 5)
+    phispace = np.concatenate((phispace, phispace1))
+
+
     xx, yy, phi_ = np.meshgrid(xspace, yspace, phispace)
     xyphi = np.stack([xx, yy, phi_])
 
@@ -118,6 +128,7 @@ def calculateFunc(t1, t2, axis, ax=None):
                     ])
 
                     X1js = deltaX + A.dot(d2js)
+
 
                     alfa1 = np.arctan2(X1js[1], X1js[0])
 

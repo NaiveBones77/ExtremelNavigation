@@ -69,18 +69,31 @@ def calculateCloud(uaw:Uaw, walls):
 
 def calculateDist2(walls, vec:DistVector, mu =0, std = 0.02):
     t = []
-
+    xyz0 = np.array([vec.coords[0], vec.coords[1]])
+    delta = 0.01
     for w in walls:
         vec.ort = vec.ort / np.linalg.norm(vec.ort)
         n = np.array([w.Q[0], w.Q[1], w.Q[2]])
         t0 = - ((np.dot(vec.coords, n)) + w.Q[3]) / np.dot(vec.ort, n)
         if (np.dot(vec.ort, n) != 0 and t0 >= 0 ):
+
             x = vec.coords[0] + t0*vec.ort[0]
             y = vec.coords[1] + t0*vec.ort[1]
             z = vec.coords[2] + t0*vec.ort[2]
-            if ((x <= np.max(w.x) + 0.1 and x >= np.min(w.x) - 0.1)
-                    and (y <= np.max(w.Y) + 0.1 and y >= np.min(w.Y) - 0.1)
-                    and (z <= np.max(w.z) + 0.1 and z >= np.min(w.z) - 0.1)):
-                dist = np.linalg.norm([x, y, z]) + normal(mu, std)
+
+            if ((x <= np.max(w.x) + delta and x >= np.min(w.x) - delta)
+                    and (y <= np.max(w.Y) + delta and y >= np.min(w.Y) - delta)
+                    and (z <= np.max(w.z) + delta and z >= np.min(w.z) - delta)):
+                A = np.array([
+                    [np.cos(vec.Az), -np.sin(vec.Az)],
+                    [np.sin(vec.Az), np.cos(vec.Az)]
+                ])
+                xyz0 = A.dot(xyz0)
+                xyz = A.dot(np.array([x, y]))
+                #dist = np.linalg.norm([x, y, z]) + normal(mu, std)
+                #dist = np.sqrt((x - vec.coords[0])**2 + (y - vec.coords[1])**2 + (z - vec.coords[2])**2) + normal(mu, std)
+                dist = np.sqrt((xyz[0] - xyz0[0])**2 + (xyz[1] - xyz0[1])**2) + normal(mu, std)
                 t.append(np.array([dist, vec.Az]))
+    if len(t) > 1:
+        t.pop()
     return t
