@@ -27,16 +27,16 @@ room = Room(walls)
 ax = figure.add_subplot(2, 1, 1)
 
 uaw = Uaw(0, 0, 4, np.deg2rad(0), Beta=1.47)
-uaw1 = Uaw(0.5, -0.75, 4, np.deg2rad(-10), Beta=1.47)
+uaw1 = Uaw(0.5, 0.5, 4, np.deg2rad(7), Beta=1.47)
 
 t = calculateCloud(uaw, walls)
 t1 = calculateCloud(uaw1, walls)
 
 
 
-plotRoomWith2Distances(t, t1, [0.5, -0.75, 0], ax=ax)
-#dispMap = calculateFunc(t, t1, axis=1, ax=ax)
-#np.save('fourth.npy', dispMap)
+#plotRoomWith2Distances(t, t1, [0, 0, np.deg2rad(0)], ax=ax)
+dispMap = calculateFunc(t, t1, axis=1, ax=ax)
+np.save('fourth.npy', dispMap)
 #disp = calculateSelfRecognition(t, 1, ax)
 plotDispRoom()
 

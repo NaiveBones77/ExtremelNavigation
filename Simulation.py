@@ -61,7 +61,7 @@ def calculateCloud(uaw:Uaw, walls):
     t=[]
     iter = 0
     for dist in uaw.distances:
-        t.append(calculateDist2(walls, dist))
+        t.append(calculateDist3(walls, dist, uaw.Az,))
         iter+=1
         if (iter == 41):
             print('deb')
@@ -96,4 +96,43 @@ def calculateDist2(walls, vec:DistVector, mu =0, std = 0.02):
                 t.append(np.array([dist, vec.Az]))
     if len(t) > 1:
         t.pop()
+    return t
+
+def calculateDist3(walls, vec:DistVector, Az =0, mu =0, std = 0.02):
+    t = []
+    index = 0
+    A = np.array([
+        [np.cos(Az), -np.sin(Az), 0],
+        [np.sin(Az), np.cos(Az), 0],
+        [0, 0, 1]
+    ])
+    vec.coords = A.dot(vec.coords)
+    #vec.ort = A.dot(vec.ort)
+    delta = 0.01
+    for w in walls:
+        vec.ort = vec.ort / np.linalg.norm(vec.ort)
+        n = A.dot(np.array([w.Q[0], w.Q[1], w.Q[2]]))
+        t0 = - ((np.dot(vec.coords, n)) + w.Q[3]) / np.dot(vec.ort, n)
+        if (np.dot(vec.ort, n) != 0 and t0 >= 0 ):
+            x = vec.coords[0] + t0*vec.ort[0]
+            y = vec.coords[1] + t0*vec.ort[1]
+            z = vec.coords[2] + t0*vec.ort[2]
+
+
+            leftPoint = np.array([w.x[0], w.Y[0], w.z[0]])
+            rightPoint = np.array([w.x[-1], w.Y[-1], w.z[-1]])
+
+            leftPoint = A.dot(leftPoint)
+            rightPoint = A.dot(rightPoint)
+
+            bounds = np.stack((leftPoint, rightPoint))
+
+            if ( (x <= np.max(bounds[:, 0]) + delta and x >= np.min(bounds[:, 0]) - delta)
+            and (y <= np.max(bounds[:, 1]) + delta and y >= np.min(bounds[:, 1]) - delta) and
+                 ( z <= np.max(bounds[:, 2])+ delta and z >= np.min(bounds[:, 2]) - delta)):
+                dist = np.sqrt((x - vec.coords[0]) ** 2 + (y - vec.coords[1]) ** 2
+                               + (z - vec.coords[2]) ** 2)
+                t.append(np.array([dist, vec.Az]))
+    if len(t) > 1:
+         t.pop()
     return t

@@ -94,7 +94,7 @@ def calculateFunc(t1, t2, axis, ax=None):
     xspace = np.concatenate((xspace, xspace1))
 
     yspace = np.linspace(-1, 0, 5)
-    yspace1 = np.linspace(-1, 0, 5)
+    yspace1 = np.linspace(0, 1, 5)
     yspace = np.concatenate((yspace, yspace1))
 
     phispace = np.linspace(np.deg2rad(-10), 0, 5)
