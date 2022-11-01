@@ -26,8 +26,6 @@ def plotRoomWith2Distances(t1, t2, shift, ax=None):
     for i in range(len(t1)):
         angxs1[i] = np.array([t1[i][0][0], t1[i][0][1]])  # for calculateDist2
         angxs2[i] = np.array([t2[i][0][0], t2[i][0][1]])
-        #angxs1[i] = np.array([t1[i][0], t1[i][1]])
-        #angxs2[i] = np.array([t2[i][0], t2[i][1]])
 
     X1 = np.array([np.cos(angxs1[:, 1])*angxs1[:, 0], np.sin(angxs1[:, 1])*angxs1[:, 0]])
     X2 = np.array([np.cos(angxs2[:, 1] + shift[2])*angxs2[:, 0] + shift[0], np.sin(angxs2[:, 1] + shift[2])*angxs2[:, 0] + shift[1]] )
