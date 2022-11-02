@@ -16,7 +16,7 @@ class Uaw:
         self.ort[1] = y[4] - y[2]
 
 
-    def __init__(self, x0, y0, z0, Az, Beta, Theta, ThetaDel):
+    def __init__(self, x0, y0, z0, Az, Beta, Theta, ThetaDel, Gamma):
         self.count = 150
         self.matrixDist = []
         self.coords = np.array([x0, y0, z0])
@@ -25,6 +25,7 @@ class Uaw:
         self.distances = []
         self.Beta = Beta
         self.Theta = Theta
+        self.Gamma = Gamma
         self.ThetaDel = ThetaDel
         self.Az = Az
         self.init_azline()

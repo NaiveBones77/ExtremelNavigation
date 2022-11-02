@@ -77,10 +77,8 @@ def calculateCloud2(uaw: Uaw, walls):
 
     for i in range(rows):
         for j in range(cols):
-            if (i==143 and j==118):
-                print('')
-            DistanceMatrix[i, j] = np.array((calculateDist4(walls, uaw.matrixDist[i][j], uaw.Az, fi=uaw.Theta, gamma=0)))
-
+            DistanceMatrix[i, j] = np.array((calculateDist4(walls, uaw.matrixDist[i][j], uaw.Az, fi=uaw.Theta, gamma=uaw.Gamma)))
+    return DistanceMatrix
 
 def calculateDist2(walls, vec: DistVector, mu=0, std=0.02):
     t = []
@@ -157,34 +155,47 @@ def calculateDist4(walls, vec: DistVector, Az=0, fi=0,  gamma=0, mu=0, std=0.02)
     t = []
     acc = []
     index = 0
-    A = np.array([
+    A3 = np.array([
         [np.cos(Az), -np.sin(Az), 0],
         [np.sin(Az), np.cos(Az), 0],
         [0, 0, 1]
     ])
-    gamma = -np.arctan(np.tan(gamma)*np.cos(fi))
-    R = np.array([
-        [np.cos(fi), 0, np.sin(fi)],
-        [np.sin(fi)*np.sin(gamma), np.cos(gamma), -np.cos(fi)*np.sin(gamma)],
-        [-np.sin(fi)*np.cos(gamma), np.sin(gamma), np.cos(fi)*np.cos(gamma)]
+    A2 = np.array([
+        [np.cos(fi), 0, -np.sin(fi)],
+        [0, 1, 0],
+        [np.sin(fi), 0, np.cos(fi)],
     ])
+    A1 = np.array([
+        [1, 0, 0],
+        [0, np.cos(gamma), -np.sin(gamma)],
+        [0, np.sin(gamma), np.cos(gamma)],
+    ])
+    A = np.dot(A1, A2)
+    A = np.dot(A, A3)
+    gamma = -np.arctan(np.tan(gamma)*np.cos(fi))
+    # R = np.array([
+    #     [np.cos(fi), 0, np.sin(fi)],
+    #     [np.sin(fi)*np.sin(gamma), np.cos(gamma), -np.cos(fi)*np.sin(gamma)],
+    #     [-np.sin(fi)*np.cos(gamma), np.sin(gamma), np.cos(fi)*np.cos(gamma)]
+    # ])
     vec.coords = A.dot(vec.coords)
     # vec.ort = A.dot(vec.ort)
     delta = 0.2
     for w in walls:
         vec.ort = vec.ort / np.linalg.norm(vec.ort)
-        n = A.dot(np.array([w.Q[0], w.Q[1], w.Q[2]]))
+        n = A3.dot(np.array([w.Q[0], w.Q[1], w.Q[2]]))
         t0 = - ((np.dot(vec.coords, n)) + w.Q[3]) / np.dot(vec.ort, n)
         if (np.dot(vec.ort, n) != 0 and t0 >= 0):
             x = vec.coords[0] + t0 * vec.ort[0]
             y = vec.coords[1] + t0 * vec.ort[1]
             z = vec.coords[2] + t0 * vec.ort[2]
 
+
             leftPoint = np.array([w.x[0], w.Y[0], w.z[0]])
             rightPoint = np.array([w.x[-1], w.Y[-1], w.z[-1]])
 
-            leftPoint = A.dot(leftPoint)
-            rightPoint = A.dot(rightPoint)
+            leftPoint = A3.dot(leftPoint)
+            rightPoint = A3.dot(rightPoint)
 
             bounds = np.stack((leftPoint, rightPoint))
 
@@ -192,7 +203,7 @@ def calculateDist4(walls, vec: DistVector, Az=0, fi=0,  gamma=0, mu=0, std=0.02)
                     and (y <= np.max(bounds[:, 1]) + delta and y >= np.min(bounds[:, 1]) - delta) and
                     (z <= np.max(bounds[:, 2]) + delta and z >= np.min(bounds[:, 2]) - delta)):
                 xyz = np.array([x, y, z])
-                xyz = np.dot(R, xyz)
+                xyz = np.dot(A, xyz)
                 t.append(np.array([xyz[0], xyz[1], xyz[2], vec.Az]))
                 acc.append(np.linalg.norm(xyz[:3]))
     if len(t) > 1:
